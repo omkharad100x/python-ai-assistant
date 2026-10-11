@@ -82,8 +82,16 @@ while True:
                     )
                 )
 
-                # Keep only the most recent messages
-                conversation_history = conversation_history[-MAX_HISTORY_MESSAGES:]
+                
+                # Keep the most recent messages in complete pairs
+                if len(conversation_history) > MAX_HISTORY_MESSAGES:
+                    conversation_history = conversation_history[-MAX_HISTORY_MESSAGES:]
+
+                    # Remove a leading assistant response if its question was trimmed
+                    if conversation_history[0].role == "model":
+                        conversation_history.pop(0)
+
+
 
             else:
                 print("\nAssistant: I received an empty response.")
@@ -104,11 +112,28 @@ while True:
             if error.code == 503 and attempt < max_retries - 1:
                 print("Gemini is busy. Retrying in 2 seconds...")
                 time.sleep(2)
+            
             else:
-                print("\nAssistant: Gemini API request failed.")
-                print("Error code:", error.code)
-                print("Error details:", error.message)
-                break
+                error_message = str(error.message).lower()
+
+                if (
+                    "quota" in error_message
+                    or "rate limit" in error_message
+                    or "resource_exhausted" in error_message
+                ):
+                    print(
+                        "\nAssistant: You've reached the Gemini API usage limit."
+                    )
+                    print(
+                        "Please wait for your quota to reset before trying again."
+                    )
+                else:
+                    print("\nAssistant: Gemini API request failed.")
+                    print("Error code:", error.code)
+                    print("Error details:", error.message)
+
+            break
+
 
         except Exception as error:
             # Remove the user message if the request fails
