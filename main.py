@@ -27,6 +27,8 @@ print("Type 'clear' to clear conversation history.")
 # Store the conversation history
 conversation_history = []
 
+MAX_HISTORY_MESSAGES = 20
+
 # Keep the assistant running
 while True:
     question = input("\nYou: ").strip()
@@ -79,6 +81,10 @@ while True:
                         ]
                     )
                 )
+
+                # Keep only the most recent messages
+                conversation_history = conversation_history[-MAX_HISTORY_MESSAGES:]
+
             else:
                 print("\nAssistant: I received an empty response.")
                 conversation_history.pop()
