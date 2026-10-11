@@ -12,9 +12,19 @@ if not api_key:
 
 client = genai.Client(api_key=api_key)
 
-response = client.models.generate_content(
-    model="gemini-3.8-flash",
-    contents="Explain artificial intelligence in 3 simple sentences."
-)
 
-print(response.text)
+
+while True:
+    question = input("\nYou: ")
+
+    if question.lower() == "exit":
+        print("Assistant: Goodbye!")
+        break
+
+    response = client.models.generate_content(
+        model="gemini-3.8-flash",
+        contents=question
+    )
+
+    print("\nAssistant:", response.text)
+
