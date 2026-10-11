@@ -1,7 +1,9 @@
 
 import os
+import time
 from dotenv import load_dotenv
 from google import genai
+from google.genai import errors
 
 # Load environment variables from .env
 load_dotenv()
@@ -29,17 +31,37 @@ while True:
         break
 
     # Handle errors during the API request
+    
     try:
-        print("Thinking...")
+        max_retries = 3
 
-        response = client.models.generate_content(
-            model="gemini-3.8-flash",
-            contents=question
-        )
+        for attempt in range(max_retries):
+            try:
+                print("Thinking...")
 
-        # Display Gemini's answer
-        print("\nAssistant:", response.text)
+                response = client.models.generate_content(
+                    model="gemini-3.8-flash",
+                    contents=question
+                )
+
+                print("\nAssistant:", response.text)
+                break
+
+            except errors.APIError as error:
+                if error.code == 503 and attempt < max_retries - 1:
+                    print("Gemini is busy. Retrying in 2 seconds...")
+                    time.sleep(2)
+                else:
+                    raise
+
+
+    
+    except errors.APIError as error:
+        print("\nAssistant: Gemini API request failed.")
+        print("Error code:", error.code)
+        print("Error details:", error.message)
 
     except Exception as error:
-        print("\nAssistant: Sorry, something went wrong.")
+        print("\nAssistant: Something unexpected went wrong.")
         print("Error details:", error)
+
