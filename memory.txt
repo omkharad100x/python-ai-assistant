@@ -1,0 +1,3 @@
+Long-term memory for the Python AI Assistant.
+
+No memories saved yet.
