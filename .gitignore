@@ -7,3 +7,6 @@
 # Python cache files
 __pycache__/
 *.py[cod]
+
+# Temporary memory test output
+test_memory_output.txt
