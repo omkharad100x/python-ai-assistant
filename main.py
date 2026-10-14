@@ -105,7 +105,7 @@ conversation_history = []
 MAX_HISTORY_EXCHANGES = 20
 
 # Keep the most recent 10 exchanges after summarization.
-RECENT_EXCHANGES_TO_KEEP = 10
+RECENT_EXCHANGES_TO_KEEP = 20
 
 
 while True:

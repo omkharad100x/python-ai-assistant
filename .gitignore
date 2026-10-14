@@ -10,3 +10,6 @@ __pycache__/
 
 # Temporary memory test output
 test_memory_output.txt
+
+# Personal long-term memory
+memory.txt
